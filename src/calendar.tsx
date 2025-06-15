@@ -3,6 +3,7 @@ import { differenceInDays } from "date-fns";
 import React, { Component, createRef } from "react";
 
 import CalendarContainer from "./calendar_container";
+import InputHeader from "./header/input_header";
 import { ClickOutsideWrapper } from "./click_outside_wrapper";
 import {
   newDate,
@@ -196,6 +197,11 @@ type CalendarProps = React.PropsWithChildren<
       onTimeChange?: TimeProps["onChange"] | InputTimeProps["onChange"];
       timeFormat?: TimeProps["format"];
       timeIntervals?: TimeProps["intervals"];
+      enableYearMonthInput?: boolean;
+      yearMonthFormat?: string | ((d: Date) => string);
+      yearRange?: [number, number];
+      allowYearMonthRawInput?: boolean;
+      onYearMonthChange?: (d: Date, type: "input" | "select") => void;
     } & (
       | ({
           showMonthYearDropdown: true;
@@ -227,6 +233,10 @@ export default class Calendar extends Component<CalendarProps, CalendarState> {
       previousMonthButtonLabel: "Previous Month",
       nextMonthButtonLabel: "Next Month",
       yearItemNumber: DEFAULT_YEAR_ITEM_NUMBER,
+      enableYearMonthInput: false,
+      yearMonthFormat: "yyyy年MM月",
+      yearRange: [1900, 2100],
+      allowYearMonthRawInput: true,
     };
   }
 
@@ -382,6 +392,7 @@ export default class Calendar extends Component<CalendarProps, CalendarState> {
     }
 
     this.props.setPreSelection && this.props.setPreSelection(date);
+    this.props.onYearMonthChange?.(date, "select");
   };
 
   getEnabledPreSelectionDateForMonth = (date: Date) => {
@@ -420,6 +431,7 @@ export default class Calendar extends Component<CalendarProps, CalendarState> {
 
     this.props.setPreSelection &&
       this.props.setPreSelection(enabledPreSelectionDate);
+    this.props.onYearMonthChange?.(enabledPreSelectionDate, "select");
   };
 
   handleCustomMonthChange = (date: Date): void => {
@@ -850,6 +862,38 @@ export default class Calendar extends Component<CalendarProps, CalendarState> {
     </div>
   );
 
+  renderInputHeader = ({ monthDate }: { monthDate: Date }) => (
+    <div
+      className={`react-datepicker__header ${
+        this.props.showTimeSelect
+          ? "react-datepicker__header--has-time-select"
+          : ""
+      }`}
+    >
+      <InputHeader
+        date={monthDate}
+        yearRange={this.props.yearRange ?? [1900, 2100]}
+        onConfirm={(d) => {
+          this.setState({ date: d }, () => {
+            this.handleMonthYearChange(d);
+            this.props.onYearMonthChange?.(d, "input");
+          });
+        }}
+      />
+      <div
+        className={`react-datepicker__header__dropdown react-datepicker__header__dropdown--${this.props.dropdownMode}`}
+        onFocus={this.handleDropdownFocus}
+      >
+        {this.renderMonthDropdown()}
+        {this.renderMonthYearDropdown()}
+        {this.renderYearDropdown()}
+      </div>
+      <div className="react-datepicker__day-names">
+        {this.header(monthDate)}
+      </div>
+    </div>
+  );
+
   renderCustomHeader = (headerArgs: { monthDate: Date; i: number }) => {
     const { monthDate, i } = headerArgs;
 
@@ -949,6 +993,8 @@ export default class Calendar extends Component<CalendarProps, CalendarState> {
         this.props.showQuarterYearPicker ||
         this.props.showYearPicker:
         return this.renderYearHeader(headerArgs);
+      case this.props.enableYearMonthInput:
+        return this.renderInputHeader(headerArgs);
       default:
         return this.renderDefaultHeader(headerArgs);
     }

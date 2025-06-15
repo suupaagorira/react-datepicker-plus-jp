@@ -92,6 +92,21 @@
   margin: 0 15px;
 }
 
+.react-datepicker__year-month-input {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+
+  input {
+    width: auto;
+    text-align: center;
+
+    &[aria-invalid="true"] {
+      border-color: red;
+    }
+  }
+}
+
 .react-datepicker__current-month,
 .react-datepicker-time__header,
 .react-datepicker-year-header {

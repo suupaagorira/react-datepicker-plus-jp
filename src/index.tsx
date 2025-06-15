@@ -194,6 +194,11 @@ export type DatePickerProps = OmitUnion<
     ariaInvalid?: string;
     ariaLabelledBy?: string;
     ariaRequired?: string;
+    enableYearMonthInput?: boolean;
+    yearMonthFormat?: string | ((d: Date) => string);
+    yearRange?: [number, number];
+    allowYearMonthRawInput?: boolean;
+    onYearMonthChange?: (d: Date, type: "input" | "select") => void;
     onChangeRaw?: (
       event?: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>,
     ) => void;
@@ -302,6 +307,10 @@ export default class DatePicker extends Component<
       calendarStartDay: undefined,
       toggleCalendarOnIconClick: false,
       usePointerEvent: false,
+      enableYearMonthInput: false,
+      yearMonthFormat: "yyyy年MM月",
+      yearRange: [1900, 2100],
+      allowYearMonthRawInput: true,
     };
   }
 

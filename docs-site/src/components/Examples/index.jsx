@@ -55,6 +55,7 @@ import WithPortalById from "../../examples/withPortalById?raw";
 import TabIndex from "../../examples/tabIndex?raw";
 import YearDropdown from "../../examples/yearDropdown?raw";
 import YearItemNumber from "../../examples/yearItemNumber?raw";
+import YearMonthInput from "../../examples/yearMonthInput?raw";
 import MonthDropdown from "../../examples/monthDropdown?raw";
 import MonthDropdownShort from "../../examples/monthDropdownShort?raw";
 import MonthYearDropdown from "../../examples/monthYearDropdown?raw";
@@ -547,6 +548,10 @@ export default class exampleComponents extends React.Component {
     {
       title: "Year item number",
       component: YearItemNumber,
+    },
+    {
+      title: "Year-Month Input",
+      component: YearMonthInput,
     },
     {
       title: "Calendar Start day",
